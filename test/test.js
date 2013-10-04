@@ -1,3 +1,4 @@
+var utils = require('./util');
 var should = require('chai').should(),
     supertest = require('supertest'),
     api = supertest('http://localhost:3000');
@@ -20,8 +21,5 @@ describe('test', function () {
  		done();
  	});
  });
-
-
-
 
 });
