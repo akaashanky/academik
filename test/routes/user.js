@@ -57,6 +57,61 @@ describe('User routes', function(){
 					done();
 				});
 			});
+			it('empty email', function(done){
+				var user = {
+					name:{
+						firstName: 'Stevie',
+						lastName: 'Gerrard'
+					},
+					email: ' '
+				};
+				api.post('/user')
+				.send(user)
+				.expect(400)
+				.end(function(err, res){
+					res.status.should.equal(400);
+					res.body.error.should.contain('email');
+					done();
+				});
+			});
+		});
+	});
+
+	describe('GET user/[id]', function(){
+		it('should return user object with valid id', function(done){
+			var user = {
+				name:{
+					firstName: 'Lucas',
+					lastName: 'Leiva'
+				},
+				email: 'lucas@lfc.com'
+			};
+			api.post('/user')
+			.send(user)
+			.expect(200)
+			.end(function(err, res){
+				should.not.exist(err);
+				api.get(res.text)
+				.expect(200)
+				.end(function(err, res){
+					should.not.exist(err);
+					res.body.name.firstName.should.equal('Lucas');
+					res.body.name.lastName.should.equal('Leiva');
+					res.body.email.should.equal('lucas@lfc.com');
+					done();
+				});
+			});
+		});
+
+		it('should return 404 with invalid id', function(done){
+			var fakeid=12345;
+			api.get('/user/'+fakeid)
+			.expect(404)
+			.end(function(err, res){
+				should.not.exist(err);
+				res.status.should.equal(404);
+				done();
+			});
 		});
 	});
 });

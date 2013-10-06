@@ -73,31 +73,12 @@ app.get('/add/:first/:second', function(req, res){
 });
 
 //User Routes
-app.post('/user', function(req, res, next){
-	req.onValidationError(function (field) {
-   		return next(new BadRequestError('Invalid field: '+field));
- 	});
- 	req.check('email', 'email').len(1).isEmail();
-	var user = {
-		name: {
-			firstName: req.body.name.firstName,
-			lastName: req.body.name.lastName
-		},
-		email: req.body.email
-	}
-
-	User.create(user, function(err, createdUser){
-		if(!err){
-			res.send('/user/'+createdUser._id.toString());
-		}
-	});
-});
+app.post('/user', user.createUser);
+app.get('/user/:id', user.findById);
 
 app.use(function(err, req, res, next){
-	console.log(err);
-  	if (err instanceof BadRequestError){
-  		res.send(400, {error: err.message});
-  	}
+	//console.log("Error: "+JSON.stringify(err));
+  	res.send(err.code, {error: err.msg});
 });
 
 
